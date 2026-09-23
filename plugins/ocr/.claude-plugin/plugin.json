@@ -1,0 +1,17 @@
+{
+  "name": "ocr",
+  "version": "0.2.0",
+  "description": "Exact text from images and scanned pages via Apple Vision OCR, on-device. For images that must stay on your Mac, or many images at once.",
+  "author": {
+    "name": "Goose Farm Future"
+  },
+  "repository": "https://github.com/goose-farm-future/foundation-model-skills",
+  "license": "MIT",
+  "keywords": [
+    "ocr",
+    "image",
+    "screenshot",
+    "receipt",
+    "on-device"
+  ]
+}

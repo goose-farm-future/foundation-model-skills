@@ -1,0 +1,17 @@
+{
+  "name": "ask-image",
+  "version": "0.2.0",
+  "description": "Experimental: answer a simple question about an image or PDF page with Apple's on-device Foundation Model, keeping it on your Mac.",
+  "author": {
+    "name": "Goose Farm Future"
+  },
+  "repository": "https://github.com/goose-farm-future/foundation-model-skills",
+  "license": "MIT",
+  "keywords": [
+    "vision",
+    "image",
+    "qa",
+    "apple-intelligence",
+    "on-device"
+  ]
+}

@@ -1,0 +1,16 @@
+{
+  "name": "pdf-to-text",
+  "version": "0.2.0",
+  "description": "PDF text extraction on-device: the embedded text layer where present, Apple Vision OCR where not.",
+  "author": {
+    "name": "Goose Farm Future"
+  },
+  "repository": "https://github.com/goose-farm-future/foundation-model-skills",
+  "license": "MIT",
+  "keywords": [
+    "pdf",
+    "text-extraction",
+    "ocr",
+    "on-device"
+  ]
+}

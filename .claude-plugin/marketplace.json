@@ -1,0 +1,67 @@
+{
+  "name": "foundation-model-skills",
+  "owner": {
+    "name": "Goose Farm Future"
+  },
+  "metadata": {
+    "description": "Task-specific skills that hand work to Apple's on-device Vision framework and Foundation Model. Biggest win: long PDFs, where Claude reads extracted text instead of page images.",
+    "version": "0.2.0"
+  },
+  "plugins": [
+    {
+      "name": "ocr",
+      "description": "Exact text from images and scanned pages via Apple Vision OCR, on-device. For images that must stay on your Mac, or many images at once.",
+      "version": "0.2.0",
+      "source": "./plugins/ocr",
+      "category": "productivity",
+      "keywords": [
+        "ocr",
+        "image",
+        "screenshot",
+        "receipt",
+        "on-device"
+      ]
+    },
+    {
+      "name": "pdf-to-text",
+      "description": "PDF text extraction on-device: the embedded text layer where present, Apple Vision OCR where not.",
+      "version": "0.2.0",
+      "source": "./plugins/pdf-to-text",
+      "category": "productivity",
+      "keywords": [
+        "pdf",
+        "text-extraction",
+        "ocr",
+        "on-device"
+      ]
+    },
+    {
+      "name": "describe-image",
+      "description": "Experimental: describe an image or PDF page with Apple's on-device Foundation Model, keeping it on your Mac.",
+      "version": "0.2.0",
+      "source": "./plugins/describe-image",
+      "category": "productivity",
+      "keywords": [
+        "vision",
+        "image",
+        "describe",
+        "apple-intelligence",
+        "on-device"
+      ]
+    },
+    {
+      "name": "ask-image",
+      "description": "Experimental: answer a simple question about an image or PDF page with Apple's on-device Foundation Model, keeping it on your Mac.",
+      "version": "0.2.0",
+      "source": "./plugins/ask-image",
+      "category": "productivity",
+      "keywords": [
+        "vision",
+        "image",
+        "qa",
+        "apple-intelligence",
+        "on-device"
+      ]
+    }
+  ]
+}

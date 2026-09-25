@@ -4,7 +4,8 @@
   {"id": "invoice-scanned", "skill": "pdf-to-text", "file": "invoice-scanned.pdf", "prompt": "What is the invoice number, total due and due date in invoice-scanned.pdf?", "expect": ["4471", "1,284.50", "14 oct"]},
   {"id": "report", "skill": "pdf-to-text", "file": "report.pdf", "prompt": "Summarise report.pdf in two bullet points.", "expect": ["48,200", "3.1", "1,406"]},
   {"id": "ops-review-20p", "skill": "pdf-to-text", "file": "ops-review.pdf", "prompt": "In ops-review.pdf, when does the Warehouse B lease expire, and on which page is that stated?", "expect": ["30 june 2028", "\\b17\\b"]},
-  {"id": "error-dialog", "skill": "ask-image", "file": "error-dialog.png", "prompt": "In error-dialog.png, what's the problem and how much space is left?", "expect": ["full", "212"]},
-  {"id": "chart", "skill": "describe-image", "file": "chart.png", "prompt": "What does chart.png show, and is the trend going up or down?", "expect": ["monthly sales", "up"]},
-  {"id": "visitors", "skill": "ask-image", "file": "visitors.png", "prompt": "In visitors.png, which month had the fewest visitors?", "expect": ["(?-i:\\bMay\\b)"]}
+  {"id": "error-dialog", "skill": "ocr", "file": "error-dialog.png", "prompt": "In error-dialog.png, what's the problem and how much space is left?", "expect": ["full", "212"]},
+  {"id": "sec-net-sales", "skill": "pdf-to-text / local-search", "file": "sec/aapl-10k-2025.pdf", "prompt": "In sec/aapl-10k-2025.pdf, what were total net sales and R&D expense for fiscal 2025, and on which pages are they stated?", "expect": ["416,161|416\\.2", "34,550|34\\.6"]},
+  {"id": "sec-buyback", "skill": "pdf-to-text / local-search", "file": "sec/aapl-10k-2025.pdf", "prompt": "According to sec/aapl-10k-2025.pdf, how many shares did Apple repurchase in 2025 and for how much?", "expect": ["402 million", "89\\.3"]},
+  {"id": "sec-china-risk", "skill": "pdf-to-text / local-search", "file": "sec/aapl-10k-2025.pdf", "prompt": "Summarise what sec/aapl-10k-2025.pdf says about Apple's manufacturing dependence on outsourcing partners, and which countries it names.", "expect": ["china", "india", "vietnam"]}
 ]

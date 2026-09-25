@@ -1,0 +1,16 @@
+{
+  "name": "classify",
+  "version": "0.3.0",
+  "description": "Classify or tag batches of text on-device with Apple Foundation Models.",
+  "author": {
+    "name": "Goose Farm Future"
+  },
+  "repository": "https://github.com/goose-farm-future/foundation-model-skills",
+  "license": "MIT",
+  "keywords": [
+    "classification",
+    "tags",
+    "batch",
+    "on-device"
+  ]
+}

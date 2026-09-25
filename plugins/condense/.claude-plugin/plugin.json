@@ -1,0 +1,16 @@
+{
+  "name": "condense",
+  "version": "0.3.0",
+  "description": "Condense long logs and test output locally, preserving exact failures and source lines.",
+  "author": {
+    "name": "Goose Farm Future"
+  },
+  "repository": "https://github.com/goose-farm-future/foundation-model-skills",
+  "license": "MIT",
+  "keywords": [
+    "logs",
+    "tests",
+    "errors",
+    "on-device"
+  ]
+}

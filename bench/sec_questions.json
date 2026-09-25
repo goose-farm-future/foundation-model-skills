@@ -1,0 +1,14 @@
+{
+  "document": "sec/aapl-10k-2025.pdf",
+  "source": "Apple Inc. Form 10-K for fiscal year ended 27 September 2025, SEC accession 0000320193-25-000079",
+  "questions": [
+    {"id": "net-sales", "question": "What were Apple's total net sales in fiscal 2025?", "answer": "416,161", "pages": [31, 32]},
+    {"id": "rd-expense", "question": "How much did Apple spend on research and development in 2025?", "answer": "34,550", "pages": [32]},
+    {"id": "net-income", "question": "What was net income for 2025?", "answer": "112,010", "pages": [40, 41, 48]},
+    {"id": "iphone-sales", "question": "What were iPhone net sales in 2025?", "answer": "209,586", "pages": [31, 48]},
+    {"id": "greater-china", "question": "How much revenue came from Greater China in 2025?", "answer": "64,377", "pages": [30]},
+    {"id": "buyback", "question": "How many shares did Apple repurchase during 2025 and for how much?", "answer": "402 million shares", "pages": [59]},
+    {"id": "dividend", "question": "What dividend per share was declared in 2025?", "answer": "1.02", "pages": [44]},
+    {"id": "auditor", "question": "Who is Apple's independent registered public accounting firm?", "answer": "Ernst & Young LLP", "pages": [66, 67, 68]}
+  ]
+}

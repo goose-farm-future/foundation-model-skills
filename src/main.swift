@@ -6,6 +6,7 @@ import Foundation
 import FoundationModels
 import ImageIO
 import PDFKit
+import Speech
 import Vision
 
 struct Page {
@@ -73,18 +74,23 @@ func render(_ page: PDFPage, scale: CGFloat = 2.5) -> CGImage {
     return ctx.makeImage()!
 }
 
-func parseRange(_ s: String?, count: Int, maxPages: Int) -> [Int] {
+func parseRange(_ s: String?, count: Int, maxPages: Int) throws -> [Int] {
+    guard count > 0 else { throw ToolError.unreadable("PDF has no readable pages") }
+    guard maxPages > 0 else { throw ToolError.usage("--max-pages must be positive") }
     guard let s else { return Array(1...min(count, maxPages)) }
-    let parts = s.split(separator: "-").compactMap { Int($0) }
-    let lo = max(1, parts.first ?? 1)
-    let hi = min(count, parts.count > 1 ? parts[1] : lo)
-    return lo <= hi ? Array(lo...hi) : []
+    let raw = s.split(separator: "-", omittingEmptySubsequences: false)
+    let parts = raw.compactMap { Int($0) }
+    guard (1...2).contains(raw.count), raw.count == parts.count, let lo = parts.first,
+          lo > 0, lo <= count, (parts.last ?? lo) >= lo else { throw ToolError.usage("invalid page range: \(s); PDF has \(count) pages") }
+    let hi = min(count, parts.last ?? lo)
+    return Array(lo...hi)
 }
 
 func loadPages(_ url: URL, range: String?, maxPages: Int, needImages: Bool, forceOCR: Bool) throws -> (pages: [Page], total: Int) {
     if url.pathExtension.lowercased() == "pdf" {
         guard let doc = PDFDocument(url: url) else { throw ToolError.unreadable("cannot open PDF \(url.path)") }
-        let pages = parseRange(range, count: doc.pageCount, maxPages: maxPages).compactMap { n -> Page? in
+        guard !doc.isLocked else { throw ToolError.unreadable("PDF is locked: \(url.path)") }
+        let pages = try parseRange(range, count: doc.pageCount, maxPages: maxPages).compactMap { n -> Page? in
             guard let p = doc.page(at: n - 1) else { return nil }
             let text = p.string?.trimmingCharacters(in: .whitespacesAndNewlines)
             // A real text layer is exact; only rasterise when it's missing/thin or the model needs pixels.
@@ -94,6 +100,10 @@ func loadPages(_ url: URL, range: String?, maxPages: Int, needImages: Bool, forc
         }
         return (pages, doc.pageCount)
     }
+    return ([Page(number: 0, image: flatten(try loadImage(url)), embeddedText: nil)], 1)
+}
+
+func loadImage(_ url: URL) throws -> CGImage {
     guard let src = CGImageSourceCreateWithURL(url as CFURL, nil),
           let raw = CGImageSourceCreateImageAtIndex(src, 0, [kCGImageSourceShouldCacheImmediately: true] as CFDictionary)
     else { throw ToolError.unreadable("cannot decode image \(url.path)") }
@@ -107,7 +117,7 @@ func loadPages(_ url: URL, range: String?, maxPages: Int, needImages: Bool, forc
            kCGImageSourceThumbnailMaxPixelSize: max(raw.width, raw.height)] as CFDictionary) {
         img = t
     }
-    return ([Page(number: 0, image: flatten(img), embeddedText: nil)], 1)
+    return img
 }
 
 // MARK: - OCR (Apple Vision)
@@ -199,27 +209,35 @@ struct FM {
         }
     }
 
-    static func doctor() {
+    static func doctor() async {
         let v = ProcessInfo.processInfo.operatingSystemVersion
         let model = SystemLanguageModel.default
         print("macOS \(v.majorVersion).\(v.minorVersion)")
         print("on-device model: \(model.availability)")
         print("image input: \(model.capabilities.contains(.vision) ? "supported" : "not supported")")
         print("OCR (Apple Vision): available")
+        if case .available = model.availability { print("model context: \(model.contextSize) tokens") }
+        print("on-device speech: \(SpeechTranscriber.isAvailable ? "available" : "unavailable")")
+        print("installed speech locales: \(await SpeechTranscriber.installedLocales.map(\.identifier).joined(separator: ", "))")
+        let segmentation = GenerateIterativeSegmentationRequest(seedPoint: NormalizedPoint(x: 0.5, y: 0.5))
+        print("segmentation assets: \(await segmentation.assetStatus)")
     }
 
     static func run() async throws {
         var args = Array(CommandLine.arguments.dropFirst())
+        if args.isEmpty || args.first == "--help" || args.first == "help" { print(usage + "\n\n" + localUsage); return }
+        if let command = args.first, localCommands.contains(command) { return try await runLocalTask(command, arguments: Array(args.dropFirst())) }
         func take(_ flag: String) -> String? {
             guard let i = args.firstIndex(of: flag), i + 1 < args.count else { return nil }
             defer { args.removeSubrange(i...(i + 1)) }
             return args[i + 1]
         }
         let range = take("--pages")
-        let maxPages = Int(take("--max-pages") ?? "") ?? 30
+        let maximum = take("--max-pages") ?? "30"
+        guard let maxPages = Int(maximum), maxPages > 0 else { throw ToolError.usage("--max-pages must be a positive integer") }
         var forceOCR = args.contains("--force-ocr")
         args.removeAll { $0 == "--force-ocr" }
-        if args.first == "doctor" { return doctor() }
+        if args.first == "doctor" { return await doctor() }
         guard args.count >= 2 else { throw ToolError.usage(usage) }
         let command = args[0]
         let url = URL(fileURLWithPath: (args[1] as NSString).expandingTildeInPath)

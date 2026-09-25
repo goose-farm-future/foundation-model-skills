@@ -1,7 +1,7 @@
 {
   "name": "pdf-to-text",
-  "version": "0.2.0",
-  "description": "PDF text extraction on-device: the embedded text layer where present, Apple Vision OCR where not.",
+  "version": "0.3.0",
+  "description": "On-device PDF text extraction (PDFKit + Apple Vision OCR): Claude reads the text, not page images, and the PDF stays on your Mac.",
   "author": {
     "name": "Goose Farm Future"
   },

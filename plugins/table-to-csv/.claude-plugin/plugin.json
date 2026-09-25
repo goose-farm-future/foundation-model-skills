@@ -1,0 +1,17 @@
+{
+  "name": "table-to-csv",
+  "version": "0.3.0",
+  "description": "Extract tables from PDFs and images into CSV on-device with Apple Vision.",
+  "author": {
+    "name": "Goose Farm Future"
+  },
+  "repository": "https://github.com/goose-farm-future/foundation-model-skills",
+  "license": "MIT",
+  "keywords": [
+    "tables",
+    "csv",
+    "pdf",
+    "vision",
+    "on-device"
+  ]
+}

@@ -1,7 +1,7 @@
 {
   "name": "ocr",
-  "version": "0.2.0",
-  "description": "Exact text from images and scanned pages via Apple Vision OCR, on-device. For images that must stay on your Mac, or many images at once.",
+  "version": "0.3.0",
+  "description": "On-device OCR with Apple Vision: Claude reads an image's text without the image leaving your Mac.",
   "author": {
     "name": "Goose Farm Future"
   },

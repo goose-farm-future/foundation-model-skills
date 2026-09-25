@@ -1,0 +1,16 @@
+{
+  "name": "transcribe-audio",
+  "version": "0.3.0",
+  "description": "Transcribe audio and video locally into text, timestamped JSON or WebVTT subtitles.",
+  "author": {
+    "name": "Goose Farm Future"
+  },
+  "repository": "https://github.com/goose-farm-future/foundation-model-skills",
+  "license": "MIT",
+  "keywords": [
+    "speech",
+    "transcription",
+    "subtitles",
+    "on-device"
+  ]
+}

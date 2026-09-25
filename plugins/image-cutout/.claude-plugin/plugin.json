@@ -1,0 +1,16 @@
+{
+  "name": "image-cutout",
+  "version": "0.3.0",
+  "description": "Isolate an image subject locally using a point or bounding box, producing a transparent PNG and mask.",
+  "author": {
+    "name": "Goose Farm Future"
+  },
+  "repository": "https://github.com/goose-farm-future/foundation-model-skills",
+  "license": "MIT",
+  "keywords": [
+    "segmentation",
+    "image",
+    "cutout",
+    "on-device"
+  ]
+}

@@ -1,0 +1,16 @@
+{
+  "name": "extract",
+  "version": "0.3.0",
+  "description": "Extract named fields from documents in bulk on-device, with source quotes and missing values.",
+  "author": {
+    "name": "Goose Farm Future"
+  },
+  "repository": "https://github.com/goose-farm-future/foundation-model-skills",
+  "license": "MIT",
+  "keywords": [
+    "extraction",
+    "json",
+    "documents",
+    "on-device"
+  ]
+}

@@ -1,0 +1,16 @@
+{
+  "name": "translate",
+  "version": "0.3.0",
+  "description": "Translate text and JSON string catalogs locally with Apple Translation or Foundation Models.",
+  "author": {
+    "name": "Goose Farm Future"
+  },
+  "repository": "https://github.com/goose-farm-future/foundation-model-skills",
+  "license": "MIT",
+  "keywords": [
+    "translation",
+    "localisation",
+    "batch",
+    "on-device"
+  ]
+}

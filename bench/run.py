@@ -21,7 +21,7 @@ BENCH = Path(__file__).resolve().parent
 ROOT = BENCH.parent
 FIXTURES = BENCH / "fixtures"
 RESULTS = BENCH / "results"
-PLUGINS = ["ocr", "pdf-to-text", "describe-image", "ask-image"]
+PLUGINS = [p["name"] for p in json.loads((ROOT / ".claude-plugin/marketplace.json").read_text())["plugins"]]
 MEDIA = re.compile(r"\.(png|jpe?g|heic|heif|gif|webp|tiff?|bmp|pdf)$", re.I)
 
 

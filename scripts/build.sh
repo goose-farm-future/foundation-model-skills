@@ -3,7 +3,8 @@
 # Needs Xcode (or Xcode-beta) with the macOS 27+ SDK, which adds image input to FoundationModels.
 set -e
 root=${0:A:h:h}
-plugins=(ocr pdf-to-text describe-image ask-image)
+plugin_names=$(python3 -c 'import json,sys; print("\n".join(p["name"] for p in json.load(open(sys.argv[1]))["plugins"]))' "$root/.claude-plugin/marketplace.json")
+plugins=("${(@f)plugin_names}")
 
 if [[ -z "$DEVELOPER_DIR" ]]; then
   for d in /Applications/Xcode.app /Applications/Xcode-beta.app; do
@@ -15,7 +16,8 @@ if [[ -z "$DEVELOPER_DIR" ]]; then
 fi
 
 out=$(mktemp -d)
-xcrun swiftc -O -parse-as-library -target arm64-apple-macos27.0 "$root/src/main.swift" -o "$out/fm-darwin-arm64"
+trap 'rm -rf "$out"' EXIT
+xcrun swiftc -O -parse-as-library -target arm64-apple-macos27.0 "$root"/src/*.swift -o "$out/fm-darwin-arm64"
 for p in $plugins; do
   mkdir -p "$root/plugins/$p/bin"
   cp "$out/fm-darwin-arm64" "$root/plugins/$p/bin/fm-darwin-arm64"

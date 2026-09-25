@@ -4,14 +4,14 @@
     "name": "Goose Farm Future"
   },
   "metadata": {
-    "description": "Task-specific skills that hand work to Apple's on-device Vision framework and Foundation Model. Biggest win: long PDFs, where Claude reads extracted text instead of page images.",
-    "version": "0.2.0"
+    "description": "Local Apple-framework skills for documents, extraction, logs, classification, search, speech, translation and image cutouts. No API fees for local processing.",
+    "version": "0.3.0"
   },
   "plugins": [
     {
       "name": "ocr",
-      "description": "Exact text from images and scanned pages via Apple Vision OCR, on-device. For images that must stay on your Mac, or many images at once.",
-      "version": "0.2.0",
+      "description": "On-device OCR with Apple Vision: Claude reads an image's text without the image leaving your Mac.",
+      "version": "0.3.0",
       "source": "./plugins/ocr",
       "category": "productivity",
       "keywords": [
@@ -24,8 +24,8 @@
     },
     {
       "name": "pdf-to-text",
-      "description": "PDF text extraction on-device: the embedded text layer where present, Apple Vision OCR where not.",
-      "version": "0.2.0",
+      "description": "On-device PDF text extraction (PDFKit + Apple Vision OCR): Claude reads the text, not page images, and the PDF stays on your Mac.",
+      "version": "0.3.0",
       "source": "./plugins/pdf-to-text",
       "category": "productivity",
       "keywords": [
@@ -36,30 +36,107 @@
       ]
     },
     {
-      "name": "describe-image",
-      "description": "Experimental: describe an image or PDF page with Apple's on-device Foundation Model, keeping it on your Mac.",
-      "version": "0.2.0",
-      "source": "./plugins/describe-image",
+      "name": "table-to-csv",
+      "description": "Extract tables from PDFs and images into CSV on-device with Apple Vision.",
+      "version": "0.3.0",
+      "source": "./plugins/table-to-csv",
       "category": "productivity",
       "keywords": [
+        "tables",
+        "csv",
+        "pdf",
         "vision",
-        "image",
-        "describe",
-        "apple-intelligence",
         "on-device"
       ]
     },
     {
-      "name": "ask-image",
-      "description": "Experimental: answer a simple question about an image or PDF page with Apple's on-device Foundation Model, keeping it on your Mac.",
-      "version": "0.2.0",
-      "source": "./plugins/ask-image",
+      "name": "extract",
+      "description": "Extract named fields from documents in bulk on-device, with source quotes and missing values.",
+      "version": "0.3.0",
+      "source": "./plugins/extract",
       "category": "productivity",
       "keywords": [
-        "vision",
+        "extraction",
+        "json",
+        "documents",
+        "on-device"
+      ]
+    },
+    {
+      "name": "condense",
+      "description": "Condense long logs and test output locally, preserving exact failures and source lines.",
+      "version": "0.3.0",
+      "source": "./plugins/condense",
+      "category": "productivity",
+      "keywords": [
+        "logs",
+        "tests",
+        "errors",
+        "on-device"
+      ]
+    },
+    {
+      "name": "classify",
+      "description": "Classify or tag batches of text on-device with Apple Foundation Models.",
+      "version": "0.3.0",
+      "source": "./plugins/classify",
+      "category": "productivity",
+      "keywords": [
+        "classification",
+        "tags",
+        "batch",
+        "on-device"
+      ]
+    },
+    {
+      "name": "local-search",
+      "description": "Search selected local documents with Apple sentence embeddings and return source passages.",
+      "version": "0.3.0",
+      "source": "./plugins/local-search",
+      "category": "productivity",
+      "keywords": [
+        "search",
+        "semantic",
+        "documents",
+        "on-device"
+      ]
+    },
+    {
+      "name": "transcribe-audio",
+      "description": "Transcribe audio and video locally into text, timestamped JSON or WebVTT subtitles.",
+      "version": "0.3.0",
+      "source": "./plugins/transcribe-audio",
+      "category": "productivity",
+      "keywords": [
+        "speech",
+        "transcription",
+        "subtitles",
+        "on-device"
+      ]
+    },
+    {
+      "name": "translate",
+      "description": "Translate text and JSON string catalogs locally with Apple Translation or Foundation Models.",
+      "version": "0.3.0",
+      "source": "./plugins/translate",
+      "category": "productivity",
+      "keywords": [
+        "translation",
+        "localisation",
+        "batch",
+        "on-device"
+      ]
+    },
+    {
+      "name": "image-cutout",
+      "description": "Isolate an image subject locally using a point or bounding box, producing a transparent PNG and mask.",
+      "version": "0.3.0",
+      "source": "./plugins/image-cutout",
+      "category": "productivity",
+      "keywords": [
+        "segmentation",
         "image",
-        "qa",
-        "apple-intelligence",
+        "cutout",
         "on-device"
       ]
     }

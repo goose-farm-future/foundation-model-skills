@@ -24,6 +24,9 @@ def load():
     by = defaultdict(list)
     for r in rows:
         by[(r["task"], r["arm"])].append(r)
+        # Keep measured tasks whose definition has since left tasks.json.
+        if r["task"] not in skills:
+            order.append(r["task"]); skills[r["task"]] = r["skill"]
     tasks = [t for t in order if (t, "cloud") in by and (t, "local") in by]
     return tasks, skills, by, rows
 

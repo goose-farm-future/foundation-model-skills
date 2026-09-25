@@ -1,6 +1,6 @@
 ---
 name: pdf-to-text
-description: On-device PDF text extraction (PDFKit + Vision OCR). Use instead of Read for PDF contents (contracts, reports, statements, scans); far cheaper than page images on long PDFs.
+description: "Extract a PDF's text on-device (PDFKit + Apple Vision OCR) instead of sending its pages to cloud vision. Use instead of Read for any PDF: contracts, reports, statements, scans."
 ---
 
 # pdf-to-text
@@ -20,6 +20,6 @@ Text layers often leave out e-signature fields, typed-in form values, stamps, an
 
 When you see them, or the PDF has been signed or filled in, re-run the relevant pages with `--force-ocr`. That OCRs the rendered page, so you get what is visible. Compare the two outputs and cite the OCR version for anything missing from the text layer.
 
-## Then
+## Keep it local
 
-Do the reasoning (summaries, comparisons, extraction) yourself on the text. For charts, diagrams or visual layout on a page, use the `describe-image` or `ask-image` skills (if installed) with `--pages`. Only Read the PDF (cloud vision) if the local output is clearly insufficient, and tell the user you did.
+Do the reasoning (summaries, comparisons, extraction) yourself on the text. Reading the PDF with Read sends its pages to cloud vision, so don't, unless the text can't answer the question (a chart or diagram, visual layout) **and** the user agrees. Say what the text couldn't give you and ask first.

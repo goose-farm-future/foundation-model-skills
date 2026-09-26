@@ -5,13 +5,13 @@
   },
   "metadata": {
     "description": "Local Apple-framework skills for documents, extraction, logs, classification, search, speech, translation and image cutouts. No API fees for local processing.",
-    "version": "0.3.0"
+    "version": "0.3.1"
   },
   "plugins": [
     {
       "name": "ocr",
       "description": "On-device OCR with Apple Vision: Claude reads an image's text without the image leaving your Mac.",
-      "version": "0.3.0",
+      "version": "0.3.1",
       "source": "./plugins/ocr",
       "category": "productivity",
       "keywords": [
@@ -25,7 +25,7 @@
     {
       "name": "pdf-to-text",
       "description": "On-device PDF text extraction (PDFKit + Apple Vision OCR): Claude reads the text, not page images, and the PDF stays on your Mac.",
-      "version": "0.3.0",
+      "version": "0.3.1",
       "source": "./plugins/pdf-to-text",
       "category": "productivity",
       "keywords": [
@@ -38,7 +38,7 @@
     {
       "name": "table-to-csv",
       "description": "Extract tables from PDFs and images into CSV on-device with Apple Vision.",
-      "version": "0.3.0",
+      "version": "0.3.1",
       "source": "./plugins/table-to-csv",
       "category": "productivity",
       "keywords": [
@@ -52,7 +52,7 @@
     {
       "name": "extract",
       "description": "Extract named fields from documents in bulk on-device, with source quotes and missing values.",
-      "version": "0.3.0",
+      "version": "0.3.1",
       "source": "./plugins/extract",
       "category": "productivity",
       "keywords": [
@@ -65,7 +65,7 @@
     {
       "name": "condense",
       "description": "Condense long logs and test output locally, preserving exact failures and source lines.",
-      "version": "0.3.0",
+      "version": "0.3.1",
       "source": "./plugins/condense",
       "category": "productivity",
       "keywords": [
@@ -78,7 +78,7 @@
     {
       "name": "classify",
       "description": "Classify or tag batches of text on-device with Apple Foundation Models.",
-      "version": "0.3.0",
+      "version": "0.3.1",
       "source": "./plugins/classify",
       "category": "productivity",
       "keywords": [
@@ -91,7 +91,7 @@
     {
       "name": "local-search",
       "description": "Search selected local documents with Apple sentence embeddings and return source passages.",
-      "version": "0.3.0",
+      "version": "0.3.1",
       "source": "./plugins/local-search",
       "category": "productivity",
       "keywords": [
@@ -104,7 +104,7 @@
     {
       "name": "transcribe-audio",
       "description": "Transcribe audio and video locally into text, timestamped JSON or WebVTT subtitles.",
-      "version": "0.3.0",
+      "version": "0.3.1",
       "source": "./plugins/transcribe-audio",
       "category": "productivity",
       "keywords": [
@@ -117,7 +117,7 @@
     {
       "name": "translate",
       "description": "Translate text and JSON string catalogs locally with Apple Translation or Foundation Models.",
-      "version": "0.3.0",
+      "version": "0.3.1",
       "source": "./plugins/translate",
       "category": "productivity",
       "keywords": [
@@ -130,7 +130,7 @@
     {
       "name": "image-cutout",
       "description": "Isolate an image subject locally using a point or bounding box, producing a transparent PNG and mask.",
-      "version": "0.3.0",
+      "version": "0.3.1",
       "source": "./plugins/image-cutout",
       "category": "productivity",
       "keywords": [

@@ -1,6 +1,6 @@
 {
   "name": "ocr",
-  "version": "0.3.0",
+  "version": "0.3.1",
   "description": "On-device OCR with Apple Vision: Claude reads an image's text without the image leaving your Mac.",
   "author": {
     "name": "Goose Farm Future"

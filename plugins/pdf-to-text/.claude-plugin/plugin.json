@@ -1,6 +1,6 @@
 {
   "name": "pdf-to-text",
-  "version": "0.3.0",
+  "version": "0.3.1",
   "description": "On-device PDF text extraction (PDFKit + Apple Vision OCR): Claude reads the text, not page images, and the PDF stays on your Mac.",
   "author": {
     "name": "Goose Farm Future"

@@ -1,6 +1,6 @@
 {
   "name": "table-to-csv",
-  "version": "0.3.0",
+  "version": "0.3.1",
   "description": "Extract tables from PDFs and images into CSV on-device with Apple Vision.",
   "author": {
     "name": "Goose Farm Future"

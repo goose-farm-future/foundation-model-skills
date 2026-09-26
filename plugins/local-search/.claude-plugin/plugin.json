@@ -1,6 +1,6 @@
 {
   "name": "local-search",
-  "version": "0.3.0",
+  "version": "0.3.1",
   "description": "Search selected local documents with Apple sentence embeddings and return source passages.",
   "author": {
     "name": "Goose Farm Future"

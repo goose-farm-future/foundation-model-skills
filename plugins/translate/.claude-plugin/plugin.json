@@ -1,6 +1,6 @@
 {
   "name": "translate",
-  "version": "0.3.0",
+  "version": "0.3.1",
   "description": "Translate text and JSON string catalogs locally with Apple Translation or Foundation Models.",
   "author": {
     "name": "Goose Farm Future"

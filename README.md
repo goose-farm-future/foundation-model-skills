@@ -25,7 +25,7 @@ Each plugin is independently installable and bundles the same native `fm` execut
 
 - Apple silicon Mac running **macOS 27 or later**.
 - Apple Intelligence enabled for `extract`, `classify`, `condense --explain`, and `translate --engine model`.
-- Speech and image segmentation may need Apple's model assets. Use `--download-assets` when a command reports that assets are not ready. Vision can require this preparation flag on subsequent invocations even when assets are cached. These downloads do not upload your input.
+- Speech and image segmentation use Apple's model assets. `image-cutout` downloads its model on first use. `transcribe-audio` works for the locales `fm doctor` lists as installed; other locales need `--download-assets`. These downloads do not upload your input.
 - The default Translation engine needs an installed supported language pair. `--engine model` uses the on-device Foundation Model instead. Hardware, locale and model availability are checked at runtime.
 
 Prebuilt arm64 binaries are included; using the plugins does not require Xcode or Python. NaturalLanguage search falls back to lexical ranking if a sentence embedding is unavailable for the requested language.
@@ -94,11 +94,11 @@ Cutout coordinates use a normalized **top-left** origin after EXIF orientation: 
 
 ## Local processing and cloud context
 
-These commands do not upload source files or fall back to a hosted model. Framework model assets may be downloaded during setup. Apple Translation may collect API usage metadata under Apple's platform policies, but it does not send your source or translated content as part of those metrics.
+These commands do not upload source files or fall back to a hosted model. Apple's framework model assets may be downloaded on first use or with `--download-assets`. Apple Translation may collect API usage metadata under Apple's platform policies, but it does not send your source or translated content as part of those metrics.
 
 A cloud assistant receives anything it reads from stdout or from a generated file. Keeping a recording or PDF local does **not** make text copied into the assistant's context private from its cloud provider. For bulk work, return paths, counts, selected evidence and exceptions. Images already pasted into a cloud chat have already been sent there; give the skill a local file path instead.
 
-OCR can misread characters or table structure. Model classification and extraction can be wrong even with valid JSON and real quotes. Search returns ranked source passages, not generated answers or proof that a missing result is absent. Speech output does not identify speakers. Condensation retains exact evidence but does not establish a root cause or preserve a shell command's exit status.
+OCR can misread characters. `table-to-csv` copies cell text exactly from a PDF's text layer where there is one, but it can miss borderless tables or misalign a label row. Model classification and extraction can be wrong even with valid JSON and real quotes. Apple's model can refuse ordinary passages; `extract` and `classify` report those passages instead of failing the run. Search returns ranked source passages, not generated answers or proof that a missing result is absent. Speech output does not identify speakers. Condensation retains exact evidence but does not establish a root cause or preserve a shell command's exit status.
 
 ## Validation and benchmarks
 

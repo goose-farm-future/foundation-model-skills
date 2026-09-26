@@ -30,8 +30,11 @@ func transcribeTask(_ arguments: [String]) async throws {
     guard let locale = await SpeechTranscriber.supportedLocale(equivalentTo: requested) else { throw ToolError.usage("unsupported transcription locale: \(requested.identifier)") }
     let transcriber = SpeechTranscriber(locale: locale, transcriptionOptions: [], reportingOptions: [], attributeOptions: [.audioTimeRange])
     let modules: [any SpeechModule] = [transcriber]
+    // AssetInventory.status can report .supported for a locale that is already on disk (the list
+    // `fm doctor` prints); only a locale missing from that list needs a real download.
     if await AssetInventory.status(forModules: modules) != .installed {
-        guard options.flags.contains("--download-assets") else { throw ToolError.unreadable("speech assets for \(locale.identifier) are not installed; rerun with --download-assets to download Apple's on-device model") }
+        let installed = await SpeechTranscriber.installedLocales.contains { $0.identifier(.bcp47) == locale.identifier(.bcp47) }
+        guard installed || options.flags.contains("--download-assets") else { throw ToolError.unreadable("speech assets for \(locale.identifier) are not installed; rerun with --download-assets to download Apple's on-device model") }
         if let installation = try await AssetInventory.assetInstallationRequest(supporting: modules) { try await installation.downloadAndInstall() }
     }
     let provider = try await AssetInputSequenceProvider.provider(from: AVURLAsset(url: url), compatibleWith: modules)
@@ -194,10 +197,9 @@ func cutoutTask(_ arguments: [String]) async throws {
         try validateOutput(pathURL(mask), inputs: [input, output], overwrite: options.flags.contains("--overwrite"))
     }
     let original = try loadImage(input)
-    if await request.assetStatus != .ready {
-        guard options.flags.contains("--download-assets") else { throw ToolError.unreadable("segmentation assets are not ready; rerun with --download-assets to install Apple's on-device model") }
-        try await request.downloadAssets()
-    }
+    // Vision reports .notReady in every new process until the model is loaded, even when it is
+    // cached, so load it unconditionally. Only the first use downloads; the image is never uploaded.
+    if await request.assetStatus != .ready { try await request.downloadAssets() }
     guard let observation = try await request.perform(on: flatten(original)) else { throw ToolError.unreadable("no segmentation mask returned; choose a point inside the subject") }
     let rawMask = CIImage(cgImage: try observation.cgImage)
     let extent = CGRect(x: 0, y: 0, width: original.width, height: original.height)

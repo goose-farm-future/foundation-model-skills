@@ -12,6 +12,6 @@ description: Transcribe local audio or video into text, timestamped JSON or WebV
 
 Formats: `json` (default, timestamped segments and full text), `txt`, `vtt`. Apple AVFoundation must support the media's audio track. Set the spoken locale explicitly for non-US English. There is no speaker identification; do not attribute speech to named people from these results alone.
 
-If Apple's speech assets are missing, rerun with `--download-assets` to download the on-device model. This downloads model assets, not a cloud transcription service. Unsupported hardware or languages produce an actionable error. Existing output files require `--overwrite`.
+Locales listed as installed by `fm doctor` work without a flag. For any other locale, the command says the assets are missing; rerun with `--download-assets` to download the on-device model. This downloads model assets, not a cloud transcription service. Unsupported hardware or languages produce an actionable error. Existing output files require `--overwrite`.
 
-Save the transcript, then search it for relevant passages before reading into context. Transcription can mishear names, numbers and technical terms. Local transcription has no API charge and does not upload the recording.
+Save the transcript, then search it for relevant passages before reading into context. Transcription can mishear names, numbers and technical terms. Check spoken amounts in particular: in testing, "four hundred and sixteen billion dollars" was written as `$416000000` (416 million), and "Warehouse B" as "warehouse be". Local transcription has no API charge and does not upload the recording.

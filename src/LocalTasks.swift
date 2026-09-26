@@ -163,7 +163,9 @@ func textUnits(_ options: TaskOptions) throws -> [TextUnit] {
 }
 
 func availableModel(tagging: Bool = false) throws -> SystemLanguageModel {
-    let model = SystemLanguageModel(useCase: tagging ? .contentTagging : .general)
+    // Tasks transform untrusted source text (filings, logs, contracts). Default guardrails refused
+    // ordinary 10-K pages, including the cover page, so use Apple's content-transformation setting.
+    let model = SystemLanguageModel(useCase: tagging ? .contentTagging : .general, guardrails: .permissiveContentTransformations)
     guard case .available = model.availability else { throw ToolError.unreadable("Apple Intelligence unavailable: \(model.availability). Enable it in System Settings and allow model downloads to finish.") }
     return model
 }

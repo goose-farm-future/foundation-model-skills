@@ -1,10 +1,32 @@
 import Foundation
 import NaturalLanguage
+import PDFKit
 import Vision
 
 func csvCell(_ value: String) -> String {
     // Quote every cell, preserving commas, quotes and newlines exactly.
     "\"" + value.replacingOccurrences(of: "\"", with: "\"\"") + "\""
+}
+
+/// A PDF page's text layer, used to fill table cells exactly instead of from OCR (which misreads
+/// "," as "." and "$" as "S"). PDFKit maps the cell's region to the characters inside it.
+struct TextLayer {
+    let page: PDFPage
+
+    init?(_ page: PDFPage) {
+        guard let text = page.string, text.trimmingCharacters(in: .whitespacesAndNewlines).count > 40 else { return nil }
+        self.page = page
+    }
+
+    /// Vision's cell boxes are tight and its table can start partway into the label column, so pad
+    /// each cell and stretch the outer columns to the page edge on the same line.
+    func text(in cell: NormalizedRect, firstColumn: Bool, lastColumn: Bool) -> String {
+        let box = page.bounds(for: .mediaBox)
+        var rect = cell.toImageCoordinates(box.size, origin: .lowerLeft).offsetBy(dx: box.minX, dy: box.minY).insetBy(dx: -1.5, dy: -1)
+        if firstColumn { rect = CGRect(x: box.minX, y: rect.minY, width: rect.maxX - box.minX, height: rect.height) }
+        if lastColumn { rect.size.width = box.maxX - rect.minX }
+        return (page.selection(for: rect)?.string ?? "").split(whereSeparator: \.isWhitespace).joined(separator: " ")
+    }
 }
 
 func tableTask(_ arguments: [String]) async throws {
@@ -16,9 +38,11 @@ func tableTask(_ arguments: [String]) async throws {
         var files: [[String: Any]] = [], sources: [[String: Any]] = []
         for (fileIndex, url) in urls.enumerated() {
             let (pages, total) = try loadPages(url, range: options.values["--pages"], maxPages: maxPages, needImages: true, forceOCR: true)
+            let document = url.pathExtension.lowercased() == "pdf" ? PDFDocument(url: url) : nil
             var tableCount = 0
             for page in pages {
                 guard let image = page.image else { continue }
+                let layer = page.number > 0 ? document?.page(at: page.number - 1).flatMap(TextLayer.init) : nil
                 let observations = try await RecognizeDocumentsRequest().perform(on: image)
                 var index = 0
                 for observation in observations {
@@ -32,9 +56,11 @@ func tableTask(_ arguments: [String]) async throws {
                         for cell in cells {
                             let key = "\(cell.rowRange.lowerBound):\(cell.columnRange.lowerBound)"
                             guard seen.insert(key).inserted else { continue }
-                            let value = cell.content.text.transcript
+                            let ocrText = cell.content.text.transcript
+                            let exact = layer?.text(in: cell.content.boundingRegion.boundingBox, firstColumn: cell.columnRange.lowerBound == 0, lastColumn: cell.columnRange.upperBound == columns - 1) ?? ""
+                            let value = exact.isEmpty ? ocrText : exact
                             grid[cell.rowRange.lowerBound][cell.columnRange.lowerBound] = value
-                            spans.append(["row_start": cell.rowRange.lowerBound, "row_end": cell.rowRange.upperBound, "column_start": cell.columnRange.lowerBound, "column_end": cell.columnRange.upperBound, "text": value])
+                            spans.append(["row_start": cell.rowRange.lowerBound, "row_end": cell.rowRange.upperBound, "column_start": cell.columnRange.lowerBound, "column_end": cell.columnRange.upperBound, "text": value, "text_source": !exact.isEmpty ? "text layer" : ocrText.isEmpty ? "empty" : "ocr"])
                         }
                         let name = String(format: "%04d-page-%d-table-%d.csv", fileIndex + 1, max(1, page.number), index)
                         let csv = grid.map { $0.map(csvCell).joined(separator: ",") }.joined(separator: "\r\n") + "\r\n"
@@ -45,7 +71,7 @@ func tableTask(_ arguments: [String]) async throws {
             }
             sources.append(["source": url.path, "pages_processed": pages.map { max(1, $0.number) }, "total_pages": total, "tables": tableCount])
         }
-        return ["files": files, "sources": sources, "note": "Zero-based inclusive cell spans; merged text appears in the top-left CSV cell. OCR may misread characters. CSV contains literal source text, including formula-like text."]
+        return ["files": files, "sources": sources, "note": "Zero-based inclusive cell spans; merged text appears in the top-left CSV cell. Cells with text_source \"text layer\" are copied exactly from the PDF; \"ocr\" cells may misread characters. CSV contains literal source text, including formula-like text."]
     }
 }
 

@@ -1,6 +1,6 @@
 {
   "name": "transcribe-audio",
-  "version": "0.3.0",
+  "version": "0.3.1",
   "description": "Transcribe audio and video locally into text, timestamped JSON or WebVTT subtitles.",
   "author": {
     "name": "Goose Farm Future"

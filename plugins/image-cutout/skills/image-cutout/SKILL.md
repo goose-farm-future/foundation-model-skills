@@ -14,4 +14,4 @@ Choose a point inside the intended subject or a tight box around it. Coordinates
 
 Uses macOS 27 Vision's iterative segmentation. Output preserves the oriented image's dimensions and transparency. `--mask` optionally saves the full-size mask. Existing outputs require `--overwrite`; neither output may replace the input or the other output.
 
-If the command reports that segmentation assets are not ready, rerun with `--download-assets` to prepare or download Apple's on-device model. Vision may require this flag again even with cached assets. No source image is uploaded and there is no API charge. Report output paths; inspect the result when the user's task needs edge-quality verification. A valid PNG alone does not establish a good cutout.
+The first use downloads Apple's on-device segmentation model; later runs load it from disk. No flag is needed (`--download-assets` is accepted and does nothing extra). The download is a model, not an upload: no source image leaves the Mac and there is no API charge. Report output paths; inspect the result when the user's task needs edge-quality verification. A valid PNG alone does not establish a good cutout.

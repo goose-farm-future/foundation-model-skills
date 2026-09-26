@@ -46,6 +46,7 @@ func extractTask(_ arguments: [String]) async throws {
     let units = try textUnits(options)
     var evidence: [String: [String: [[String: Any]]]] = [:]
     var rejected = 0, chunks = 0
+    var refused: [[String: Any]] = []
     for unit in units {
         if evidence[unit.source] == nil { evidence[unit.source] = [:] }
         for chunk in try await modelChunks(unit, model: model, budget: budget) {
@@ -55,7 +56,14 @@ func extractTask(_ arguments: [String]) async throws {
             // to another simply because the model is trying to fill a batch schema.
             for name in names {
                 let session = LanguageModelSession(model: model, instructions: instructions)
-                let answer = try await session.respond(to: prompts[name]! + chunk.text, generating: FieldExtraction.self, options: GenerationOptions(samplingMode: .greedy, maximumResponseTokens: 1400))
+                let answer: LanguageModelSession.Response<FieldExtraction>
+                do {
+                    answer = try await session.respond(to: prompts[name]! + chunk.text, generating: FieldExtraction.self, options: GenerationOptions(samplingMode: .greedy, maximumResponseTokens: 1400))
+                } catch LanguageModelError.guardrailViolation, LanguageModelError.refusal {
+                    // Report the passage instead of discarding every other result in a long document.
+                    var item = chunk.reference; item["field"] = name
+                    refused.append(item); continue
+                }
                 guard answer.content.present else { continue }
                 for field in answer.content.matches {
                     let value = field.value, quote = field.quote
@@ -72,12 +80,18 @@ func extractTask(_ arguments: [String]) async throws {
         var result: [String: Any] = [:]
         for name in fields.keys.sorted() {
             let found = evidence[source]?[name] ?? []
-            let values = Array(Set(found.compactMap { $0["value"] as? String })).sorted()
+            // "$ 416,161" and "416,161" are one value, not a conflict. Group by digits and letters
+            // only and report the most frequent verbatim copy of each group.
+            let copies = found.compactMap { $0["value"] as? String }
+            let groups = Dictionary(grouping: copies) { $0.filter { !"$, ".contains($0) && !$0.isWhitespace } }
+            let values = groups.values.map { group in
+                Dictionary(grouping: group, by: { $0 }).max { $0.value.count == $1.value.count ? $0.key > $1.key : $0.value.count < $1.value.count }!.key
+            }.sorted()
             result[name] = ["value": values.count == 1 ? values[0] as Any : NSNull(), "status": values.isEmpty ? "missing" : values.count == 1 ? "found" : "conflict", "alternatives": values.count > 1 ? values : [], "evidence": found]
         }
         return ["source": source, "fields": result]
     }
-    try emit(["records": records, "chunks_processed": chunks, "rejected_ungrounded_values": rejected, "note": "Quotes are verified against extracted text; OCR and field interpretation can still be wrong."], options: options, count: records.count)
+    try emit(["records": records, "chunks_processed": chunks, "rejected_ungrounded_values": rejected, "refused_passages": refused, "note": "Quotes are verified against extracted text; OCR and field interpretation can still be wrong. A field is not shown missing from any passage listed in refused_passages."], options: options, count: records.count)
 }
 
 func classifyTask(_ arguments: [String]) async throws {
@@ -103,7 +117,13 @@ func classifyTask(_ arguments: [String]) async throws {
         for chunk in try await modelChunks(unit, model: model, budget: budget) {
             if chunk.text.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty { continue }
             let session = LanguageModelSession(model: model, instructions: instructions)
-            let result = try await session.respond(to: chunk.text, generating: Classification.self, options: GenerationOptions(samplingMode: .greedy, maximumResponseTokens: 200))
+            let result: LanguageModelSession.Response<Classification>
+            do {
+                result = try await session.respond(to: chunk.text, generating: Classification.self, options: GenerationOptions(samplingMode: .greedy, maximumResponseTokens: 200))
+            } catch LanguageModelError.guardrailViolation, LanguageModelError.refusal {
+                var row = chunk.reference; row["labels"] = ["refused"]; row["characters"] = chunk.text.count
+                records.append(row); counts["refused", default: 0] += 1; continue
+            }
             var tags = Array(Set(result.content.labels.map { $0.trimmingCharacters(in: .whitespacesAndNewlines) }.filter { !$0.isEmpty })).sorted()
             if let labels { tags = tags.filter { labels.contains($0) }; if tags.count != 1 { tags = ["unknown"] } }
             var row = chunk.reference; row["labels"] = tags; row["characters"] = chunk.text.count

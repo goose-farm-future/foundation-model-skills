@@ -101,6 +101,7 @@ def extraction():
     assert fields["invoice_number"]["value"] == "INV-2048", fields
     assert "1,284.50" in fields["total"]["value"], fields
     assert fields["purchase_order"]["value"] is None, fields
+    assert data["refused_passages"] == [], data["refused_passages"]
     source = (FIX / "invoice.txt").read_text()
     for field in fields.values():
         for evidence in field["evidence"]:
@@ -267,6 +268,21 @@ def errors():
     invoke("translate", RUN / "bad-strings.json", "--source", "en", "--target", "es", "--engine", "model", "--output", RUN / "bad-translated", expect=1)
     assert not (RUN / "bad-translated").exists()
 
+
+
+@test("table-to-csv-text-layer")
+def tables_text_layer():
+    # OCR once read these cells as 416.161 and 996.995; a text-layer PDF must give exact values.
+    pdf = ROOT / "bench/fixtures/sec/aapl-10k-2025.pdf"
+    if not pdf.exists():
+        raise Unavailable("SEC fixture missing; run SEC_CONTACT=you@example.com scripts/fetch-sec.sh")
+    manifest = result("table-to-csv", pdf, "--pages", "31-41", "--output", RUN / "sec-tables")
+    saved = json.loads(Path(manifest["manifest"]).read_text())
+    cells = [c for f in saved["files"] for c in f["cells"]]
+    exact = {c["text"] for c in cells if c["text_source"] == "text layer"}
+    for value in ("416,161", "37,005", "$ 96,995", "(765)", "Total net sales"):
+        assert value in exact, (value, sorted(exact)[:40])
+    assert not any(c["text"] in ("416.161", "996.995") for c in cells)
 
 report = {"artifacts": str(RUN), "results": RESULTS, "local_api_cost_usd": 0}
 (RUN / "results.json").write_text(json.dumps(report, indent=2) + "\n")

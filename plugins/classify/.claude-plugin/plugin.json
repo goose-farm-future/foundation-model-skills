@@ -1,6 +1,6 @@
 {
   "name": "classify",
-  "version": "0.3.0",
+  "version": "0.3.1",
   "description": "Classify or tag batches of text on-device with Apple Foundation Models.",
   "author": {
     "name": "Goose Farm Future"
